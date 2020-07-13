@@ -37,3 +37,8 @@ jobs:
     - name: build
       run: |
         ./build.sh
+    - name: upload artifact
+      - uses: actions/upload-artifact@v2
+        with:
+          name: statr
+          path: ./statr.pyz
