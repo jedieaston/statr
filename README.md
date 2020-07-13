@@ -2,13 +2,13 @@
 
 Checks the status of a statuspage.io service, namely the first one. I use it for Canvas.
 
-```
-python3 main.py <url>
+``` 
+statr.pyz --url <url of statuspage>
 
 # or, just for hosted Canvas...
 
-python3 main.py
+statr.pyz
 
 ```
 
-Requires requests.
+Dependencies are packaged now, hurray!
