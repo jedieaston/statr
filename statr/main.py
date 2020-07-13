@@ -1,9 +1,10 @@
 # Get status for Canvas every 5 minutes and report back....
-#!/usr/bin/env python
 
 import requests as r
 import json
-import sys
+# import sys
+import click
+
 
 
 def get_status(url) -> tuple:
@@ -14,6 +15,10 @@ def get_status(url) -> tuple:
     return content["components"][0]["name"], content["components"][0]["status"]
 
 def wrapper(url) -> str:
+    """
+    Gets status from a statuspage. and returns if its up or not.
+    """
+
     name, result = get_status(url)
     if (result == "operational"):
         return (name + " is up.")
@@ -22,17 +27,16 @@ def wrapper(url) -> str:
     else:
         return (name + " may be down. Current status ==", result)
 
-if __name__ == "__main__":
-    if (len(sys.argv) > 1):
-        # we were passed a different url.
-        try:
-            print(wrapper(sys.argv[1]))
-        except:
-            print("That statuspage(tm) is not available!")
-    else:
-        # Guess we'll just do Canvas.
-        print (wrapper("https://status.instructure.com/"))
-        exit()
+@click.command()
+@click.option('--url', default="https://status.instructure.com/", help="URL of Statuspage.io statuspage.")
+def cli(url):
+    """
+    returns status from a statuspage.io page to STDOUT.
+    """
+    click.echo(wrapper(url))
 
+
+if __name__ == "__main__":
+    cli()
     
 
