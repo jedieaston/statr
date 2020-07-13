@@ -33,7 +33,10 @@ def cli(url):
     """
     returns status from a statuspage.io page to STDOUT.
     """
-    click.echo(wrapper(url))
+    try:
+        click.echo(wrapper(url))
+    except:
+        click.echo("Bad URL! Try again.")
 
 
 if __name__ == "__main__":
