@@ -18,7 +18,12 @@ def wrapper(url) -> str:
     """
     Gets status from a statuspage. and returns if its up or not.
     """
-
+    # First... do we have internet?
+    try:
+        requests.get("https://8.8.8.8")
+    except:
+        print("It doesn't appear you have internet. So everything's down!")
+        exit()
     name, result = get_status(url)
     if (result == "operational"):
         return (name + " is up.")
