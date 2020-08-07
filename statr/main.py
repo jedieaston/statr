@@ -20,7 +20,7 @@ def wrapper(url) -> str:
     """
     # First... do we have internet?
     try:
-        requests.get("https://8.8.8.8")
+        r.get("https://8.8.8.8")
     except:
         print("It doesn't appear you have internet. So everything's down!")
         exit()
@@ -29,6 +29,10 @@ def wrapper(url) -> str:
         return (name + " is up.")
     elif (result == "major_outage"):
         return (name + " is down. Current status ==", result)
+    elif (result == "degraded_performance"):
+        return (f"{name} is degraded.")
+    elif (result == "partial_outage."):
+        return(f"{name} is partially down.")
     else:
         return (name + " may be down. Current status ==", result)
 
