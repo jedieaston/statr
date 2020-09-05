@@ -1,0 +1,10 @@
+README.md
+setup.py
+statr/__init__.py
+statr/main.py
+statr/setup.py
+statr.egg-info/PKG-INFO
+statr.egg-info/SOURCES.txt
+statr.egg-info/dependency_links.txt
+statr.egg-info/requires.txt
+statr.egg-info/top_level.txt

@@ -3,6 +3,7 @@ import json
 # import sys
 import click
 import os
+import subprocess
 from pathlib import Path
 from click_default_group import DefaultGroup
 
@@ -19,11 +20,10 @@ def wrapper(url) -> str:
     Gets status from a statuspage. and returns if its up or not.
     """
     # First... do we have internet?
-    try:
-        r.get("https://8.8.8.8")
-    except:
+    response = subprocess.run(["ping", "-c", "1", "-i", "0.2", "8.8.8.8"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode 
+    if (response != 0):
         print("It doesn't appear you have internet. So everything's down!")
-        exit()
+        raise click.Abort()
     name, result = get_status(url)
     if (result == "operational"):
         return (name + " is up.")
@@ -74,14 +74,15 @@ def save_bookmark(save):
         wrapper(url)
     except:
         click.echo("Bad URL! Did you type the arguments incorrectly?")
-        exit()
+        raise click.Abort()
     # It's valid. Now let's make sure it's not already saved.
     
     bookmarks = get_bookmarks()
     check = bookmarks.get(name, "nope")
     if (check != "nope"):
         click.echo("This name already exists! Choose a different one or remove it from ~/.config/statr.json")
-        exit()
+        # exit()
+        raise click.Abort()
     # Now let's write it!
     try:
         bookmarks[name] = url
@@ -94,7 +95,7 @@ def save_bookmark(save):
             f.write(json.dumps(bookmarks))
     except:
         click.echo("We couldn't save the bookmark. Ensure that you have write access to ~/.config/statr.json and try again.")
-        exit()
+        raise click.Abort()
     click.echo(name + " saved to statr.json. to check, run 'statr service " + name + "'")
 
 @click.command()
@@ -108,10 +109,12 @@ def check_service(service):
         url = bookmarks[service]
     except:
         print("That service is not defined in ~/.config/statr.json. Try to save it first!")
+        raise click.Abort()
     try:
         click.echo(wrapper(url))
     except:
         click.echo("The URL that is saved isn't valid. Check ~/.config/statr.json and try again")
+        raise click.Abort()
 
 @click.command()
 def check_all():
@@ -125,6 +128,8 @@ def check_all():
         for i in list(bookmarks.values()):
             try:
                 click.echo(wrapper(str(i)))
+            except click.Abort:
+                click.Abort()
             except:
                 click.echo("We can't check " + str(i) + " . Check that it's correct in ~/.config/statr.json")
                 exit()
